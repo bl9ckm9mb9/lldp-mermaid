@@ -10,9 +10,13 @@ import subprocess
 net_grp = argv
 p = subprocess
 
-# Testing via Ansible ad-hoc command:
-play_output = p.call(["ansible", "td-juniper", "-m", "ping"])
+# File for Ansible Output
+play_file = open("output.txt", "w")
 
+# Testing via Ansible ad-hoc command:
+# play_output = p.call(["ansible", "td-juniper", "-m", "ping"])
+play_output = p.Popen(["ansible", "td-juniper", "-m", "ping"], shell=True, stdout=play_file)
+play_file.close()
 
 
 # Prettify Ansible Playbook output (in JSON)
