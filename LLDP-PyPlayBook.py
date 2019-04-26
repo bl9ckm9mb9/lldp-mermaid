@@ -1,3 +1,4 @@
+#!/bin/bash/env Python3
 ''' Python Script to run Ansible Playbook, providing a key word to
 execute the Playbook on - Project LLDP Mermaid App '''
 
@@ -10,16 +11,70 @@ import subprocess
 net_grp = argv
 p = subprocess
 
-# File for Ansible Output
-play_file = open("output.txt", "w")
-
 # Testing via Ansible ad-hoc command:
-# play_output = p.call(["ansible", "td-juniper", "-m", "ping"])
-play_output = p.Popen(["ansible", "td-juniper", "-m", "ping"], shell=True, stdout=play_file)
-play_file.close()
+ans_output = p.check_output(["ansible", "td-juniper", "-m", "ping"])
+
+######################################################################################################
+
+# Variables
+hyphen = "-"
+colon = ":"
+unwanted = "msg"
+new_file = open('play-lldp.txt', 'a+')
+# ans_output_file = open('raw-output.txt', 'a+')
+
+######################################################################################################
+
+# Write Ansible Playbook output to a txt file
+str(ans_output)
 
 
-# Prettify Ansible Playbook output (in JSON)
-# and convert to Python Lists/Dictionary
-# Guide: https://www.w3schools.com/python/python_json.asp
-play_clean_json = ''
+with open('raw-output.txt', 'a+') as ans_output_file:
+	ans_output_file.write(ans_output)
+	# contents = ans_output_file.read()
+	# print "This is your ans_output_file:",contents
+
+
+	#print(ans_output_file.read())
+	# Open file that contains Ansible Playbook output as the variable: 'f'
+	with open('raw-output.txt', 'a+') as list_of_lines:
+		# readlines(): format lines, as lists full of strings, to search for wanted text,
+		# line by line.
+		list_of_lines.readlines()
+		read_list =  list_of_lines.read()
+		print "This is your read_list:",read_list
+
+		# Iterate through content to filter out unwantend text
+		for line in list_of_lines:
+			print "LOGIC KICKING IN!"
+			if "msg" in line:
+				pass
+			elif "changed" in line:
+				pass
+			elif "stdout" in line:
+				pass
+			elif "table" in line:
+				pass
+			elif "SUCCESS" in line:
+				pass
+			# This adds line to new_file
+			elif hyphen in line or colon in line:
+				print(line[:-33]) # added for debugging and can be commented out when no longer needed
+				new_file.write(line)
+
+# Checking if file is closed:
+print(ans_output_file.closed)
+
+contents = open('raw-output.txt','r+')
+#contents = ans_output_file.open()
+print "This is your ans_output_file:",contents.read()
+
+# Close new file:
+ans_output_file.close()
+new_file.close()
+
+######################################################################################################
+
+print(ans_output)
+
+
