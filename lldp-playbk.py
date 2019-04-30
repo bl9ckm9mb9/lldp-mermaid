@@ -35,10 +35,12 @@ def dev_shape(item):
 
 
 # Variable to use throughout script
-net_grp = argv
+site = argv
 p = subprocess
 hyphen = "-"
 colon = ":"
+
+print site[1]
 
 '''
 Testing via Ansible ad-hoc command:
@@ -76,7 +78,7 @@ with open('raw.txt', 'r+') as file:
 			cleanedup_txt.write(line)		
 
 # Mermaid formatting:
-graph_direction = "```\ngraph TD \n"
+graph_direction = "```mermaid\n \ngraph TD \n"
 
 ''' 
 File from previous run, containing the filtered
@@ -107,7 +109,7 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
         	# splitting on empty spaces
             my_list = line.split()
             target_dev = my_list[0]
-            print target_dev
+            #print target_dev
             dev_shape(target_dev)
             lldp_diagram.write(target_dev)
         else:
@@ -115,11 +117,8 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
             del my_list[-1]
             local_port = my_list[0] 
             lldp_neigh = my_list[-1]
-            lldp_link = "%s -->|%s <br><br>|%s" % (target_dev, local_port, lldp_neigh)
+            lldp_link = "%s -->|%s <br><br>|%s\n" % (target_dev, local_port, lldp_neigh)
             lldp_diagram.write(lldp_link)
-		
-
-print "Code executed." 
 
 
 # Close all files.
