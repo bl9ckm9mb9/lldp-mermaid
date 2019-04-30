@@ -12,16 +12,14 @@ net_grp = argv
 p = subprocess
 
 # Testing via Ansible ad-hoc command:
-ans_output = p.check_output(["ansible", "td-juniper", "-m", "ping"])
+ans_output = p.check_output(["ansible", "srx210", "-m", "ping"])
 
 ######################################################################################################
 
 # Variables
 hyphen = "-"
 colon = ":"
-unwanted = "msg"
-new_file = open('play-lldp.txt', 'a+')
-# ans_output_file = open('raw-output.txt', 'a+')
+play_lldp_file = open('play-lldp.txt', 'a+')
 
 ######################################################################################################
 
@@ -29,20 +27,18 @@ new_file = open('play-lldp.txt', 'a+')
 str(ans_output)
 
 
-with open('raw-output.txt', 'a+') as ans_output_file:
+with open('ans-output-file.txt', 'a+') as ans_output_file:
 	ans_output_file.write(ans_output)
-	# contents = ans_output_file.read()
-	# print "This is your ans_output_file:",contents
-
 
 	#print(ans_output_file.read())
 	# Open file that contains Ansible Playbook output as the variable: 'f'
-	with open('raw-output.txt', 'a+') as list_of_lines:
+	with open('ans-output-file.txt', 'a+') as list_of_lines:
 		# readlines(): format lines, as lists full of strings, to search for wanted text,
 		# line by line.
-		list_of_lines.readlines()
-		read_list =  list_of_lines.read()
-		print "This is your read_list:",read_list
+		test = ans_output_file.readlines()
+		print "Read line: %s" % test
+		print "Hello... You are here, right at the doorstep of your loop."
+
 
 		# Iterate through content to filter out unwantend text
 		for line in list_of_lines:
@@ -57,24 +53,23 @@ with open('raw-output.txt', 'a+') as ans_output_file:
 				pass
 			elif "SUCCESS" in line:
 				pass
-			# This adds line to new_file
+			# This adds line to play_lldp_file
 			elif hyphen in line or colon in line:
+				print "Entered your loop."
 				print(line[:-33]) # added for debugging and can be commented out when no longer needed
-				new_file.write(line)
+				play_lldp_file.write(line)
 
 # Checking if file is closed:
-print(ans_output_file.closed)
+print(ans_output_file.closed), "ans_output_file is closed."
 
-contents = open('raw-output.txt','r+')
+# Checking if 
+
+contents = open('ans-output-file.txt','r+')
 #contents = ans_output_file.open()
 print "This is your ans_output_file:",contents.read()
 
+
 # Close new file:
 ans_output_file.close()
-new_file.close()
-
-######################################################################################################
-
-print(ans_output)
-
+play_lldp_file.close()
 
