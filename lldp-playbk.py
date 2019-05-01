@@ -10,6 +10,7 @@ LLDP Mermaid App
 # Using "subprocess" to run commands (i.e. "ansible-playbook nameofplay.yml")
 from sys import argv
 import subprocess
+import os
 
 ''' 
 My function for formatting
@@ -35,12 +36,14 @@ def dev_shape(item):
 
 
 # Variable to use throughout script
-site = argv
+user_input = argv
 p = subprocess
 hyphen = "-"
 colon = ":"
 
-print site[1]
+site = user_input[2]
+limit = user_input[1]
+
 
 '''
 Testing via Ansible ad-hoc command:
@@ -48,10 +51,15 @@ Example of ansible command:
 ansible-playbook ~/myansible/lldp.yml --limit "spn-500-paula-dtg01-sw"
 '''
 
-ans_output = p.check_output(["ansible-playbook", "/Users/diegoavalos/myansible/lldp.yml","-i","/Users/diegoavalos/myansible/hosts"])
+# New code
+myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml /Users/diegoavalos/myansible/hosts %s %s > raw.txt" % (limit,site)
+ans_output = p.call(myCmd,shell=True)
+
+#ans_output = p.check_output(["ansible-playbook", "/Users/diegoavalos/myansible/lldp.yml","-i","/Users/diegoavalos/myansible/hosts"])
 
 # Ansible Playbook output to string format
-str(ans_output)
+ans_output = str(ans_output)
+print(type(ans_output))
 
 # Create cleaned up text file for writing:
 cleanedup_txt = open('cleanedup.txt','a+') 
@@ -128,7 +136,7 @@ lldp_diagram.close()
 
 # Debugging. Remove after project is complete.
 if raw_txt and cleanedup_txt and lldp_diagram:
-	print "All files are closed."
+	print("All files are closed.")
 
 # Command to open file with default Markdown reader
 open_typora = p.Popen(["open", "lldp-diagram.md"], stdout=subprocess.PIPE)
