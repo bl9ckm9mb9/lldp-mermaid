@@ -44,7 +44,7 @@ colon = ":"
 '''
 Testing via Ansible ad-hoc command:
 Example of ansible command: 
-ansible-playbook ~/myansible/lldp.yml --limit "spn-500-paula-dtg01-sw"
+ansible-playbook ~/myansible/lldp.yml --limit "hostname-here-sw"
 '''
 
 # This one works:
@@ -52,7 +52,7 @@ site = user_input[1]
 myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit %s >> raw.txt" % (site)
 
 # Used for testing ; bypassing sysargv variables
-# myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit spn-500-paula-prod-a-sw >> raw.txt"
+# myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit 'hostname-here-sw' >> raw.txt"
 
 # Telling user to wait while command runs. 
 print "... stay funky for about 5 seconds."
