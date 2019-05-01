@@ -49,18 +49,16 @@ ansible-playbook ~/myansible/lldp.yml --limit "spn-500-paula-dtg01-sw"
 
 # This one works:
 site = user_input[1]
-#limit = user_input[1]
 myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit %s >> raw.txt" % (site)
 
 # Used for testing ; bypassing sysargv variables
-#myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit spn-500-paula-prod-a-sw >> raw.txt"
+# myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit spn-500-paula-prod-a-sw >> raw.txt"
 
+# Telling user to wait while command runs. 
 print "... stay funky for about 5 seconds."
 
-
+# Run ansible command, and set output to string format
 ans_output = p.call(myCmd,shell=True)
-
-# Ansible Playbook output to string format
 ans_output = str(ans_output)
 
 # Create cleaned up text file for writing:
@@ -83,7 +81,6 @@ with open('raw.txt', 'r+') as file:
 			pass
 		elif "master:0" in line:
 			pass
-		# This adds line to cleanedup_txt
 		elif hyphen in line or colon in line:
 			cleanedup_txt.write(line)		
 
@@ -106,7 +103,6 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
     neighbor = ""
     noise = "TTL"
 
-
     # write type of file:
     lldp_diagram.write(graph_direction)
 
@@ -119,7 +115,6 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
         	# splitting on empty spaces
             my_list = line.split()
             target_dev = my_list[0]
-            #print target_dev
             dev_shape(target_dev)
             lldp_diagram.write(target_dev)
         else:
@@ -137,9 +132,6 @@ raw_txt.close()
 cleanedup_txt.close()
 lldp_diagram.close()
 
-# Debugging. Remove after project is complete.
-#if raw_txt and cleanedup_txt and lldp_diagram:
-#	print("All files are closed.")
 
 # Command to open file with default Markdown reader
 open_typora = p.Popen(["open", "lldp-diagram.md"], stdout=subprocess.PIPE)
