@@ -41,25 +41,25 @@ p = subprocess
 hyphen = "-"
 colon = ":"
 
-site = user_input[2]
-limit = user_input[1]
-
-
 '''
 Testing via Ansible ad-hoc command:
 Example of ansible command: 
 ansible-playbook ~/myansible/lldp.yml --limit "spn-500-paula-dtg01-sw"
 '''
 
-# New code
-myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml /Users/diegoavalos/myansible/hosts %s %s > raw.txt" % (limit,site)
-ans_output = p.call(myCmd,shell=True)
+# This one works:
+site = user_input[1]
+#limit = user_input[1]
+myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit %s >> raw.txt" % (site)
 
-#ans_output = p.check_output(["ansible-playbook", "/Users/diegoavalos/myansible/lldp.yml","-i","/Users/diegoavalos/myansible/hosts"])
+# Used for testing ; bypassing sysargv variables
+#myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit spn-500-paula-prod-a-sw >> raw.txt"
+
+ans_output = p.call(myCmd,shell=True)
 
 # Ansible Playbook output to string format
 ans_output = str(ans_output)
-print(type(ans_output))
+#print(type(ans_output))
 
 # Create cleaned up text file for writing:
 cleanedup_txt = open('cleanedup.txt','a+') 
@@ -135,8 +135,8 @@ cleanedup_txt.close()
 lldp_diagram.close()
 
 # Debugging. Remove after project is complete.
-if raw_txt and cleanedup_txt and lldp_diagram:
-	print("All files are closed.")
+#if raw_txt and cleanedup_txt and lldp_diagram:
+#	print("All files are closed.")
 
 # Command to open file with default Markdown reader
 open_typora = p.Popen(["open", "lldp-diagram.md"], stdout=subprocess.PIPE)
