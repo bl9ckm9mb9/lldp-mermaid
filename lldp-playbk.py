@@ -55,11 +55,13 @@ myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit %s >> ra
 # Used for testing ; bypassing sysargv variables
 #myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit spn-500-paula-prod-a-sw >> raw.txt"
 
+print "... stay funky for about 5 seconds."
+
+
 ans_output = p.call(myCmd,shell=True)
 
 # Ansible Playbook output to string format
 ans_output = str(ans_output)
-#print(type(ans_output))
 
 # Create cleaned up text file for writing:
 cleanedup_txt = open('cleanedup.txt','a+') 
@@ -86,7 +88,7 @@ with open('raw.txt', 'r+') as file:
 			cleanedup_txt.write(line)		
 
 # Mermaid formatting:
-graph_direction = "```mermaid\n \ngraph TD \n"
+graph_direction = "```mermaid\n \ngraph LR \n"
 
 ''' 
 File from previous run, containing the filtered
@@ -128,6 +130,7 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
             lldp_link = "%s -->|%s <br><br>|%s\n" % (target_dev, local_port, lldp_neigh)
             lldp_diagram.write(lldp_link)
 
+    lldp_diagram.write("```\n \n")
 
 # Close all files.
 raw_txt.close()
