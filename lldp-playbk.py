@@ -91,8 +91,8 @@ ansible-playbook ~/myansible/lldp.yml --limit "hostname-here-sw"
 '''
 
 # This one works:
-#site = user_input[1]
-site = "spn-500-paula-sw"
+site = user_input[1]
+#site = "spn-500-paula-sw"
 myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit %s >> raw.txt" % (site)
 
 # Used for testing ; bypassing sysargv variables
