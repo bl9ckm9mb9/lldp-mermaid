@@ -35,17 +35,6 @@ def dev_shape(item):
 		str(formatted_dev)
 
 def arista_dev(line):
-#    if noise in line:
-#        pass
-#    elif "SUCCESS" in line:
-#        # The split() func. will create a list of your string of text, 
-#        # splitting on empty spaces
-#        my_list = line.split()
-#        master_list.append(my_list[0])
-#        target_dev = my_list[0]
-#        dev_shape(target_dev)
-#
-#    else:
     my_list = line.split()
     del my_list[-1]
     local_port = my_list[0]
@@ -56,17 +45,6 @@ def arista_dev(line):
     lldp_diagram.write(lldp_link)
 
 def juniper_dev(line):
-#    if noise in line:
-#        pass
-#    elif "SUCCESS" in line:
-#        # The split() func. will create a list of your string of text, 
-#        # splitting on empty spaces
-#        my_list = line.split()
-#        master_list.append(my_list[0])
-#        target_dev = my_list[0]
-#        dev_shape(target_dev)
-
-#    else:
     my_list = line.split()
     if my_list[-1] == '",':
         del my_list[-1]
@@ -92,7 +70,7 @@ ansible-playbook ~/myansible/lldp.yml --limit "hostname-here-sw"
 
 # This one works:
 site = user_input[1]
-#site = "spn-500-paula-sw"
+#site = "spn-dsc0"
 myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit %s >> raw.txt" % (site)
 
 # Used for testing ; bypassing sysargv variables
@@ -157,8 +135,7 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
     for line in cleanedup_txt:
         master_list = []
         dev_shape(target_dev)
-        print(line.index("-"))
-    	# Juniper version
+
         if noise in line:
             pass
         elif "SUCCESS" in line:
@@ -170,16 +147,6 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
         elif (line.index("-")) == 11:
             # Juniper
             juniper_dev(line)
-#            my_list = line.split()
-#            if my_list[-1] == '",':
-#            	del my_list[-1]
-#            local_port = my_list[0]
-#            local_port = local_port.strip('"')
-#            neigh_port = my_list[1]
-#            lldp_neigh = my_list[-1]
-#            lldp_neigh = lldp_neigh.strip('",')        
-#            lldp_link = "%s -->|%s <br><br>%s|%s\n" % (target_dev, local_port, neigh_port, lldp_neigh)
-#            lldp_diagram.write(lldp_link)
         else:
             # Arista version
             arista_dev(line)
