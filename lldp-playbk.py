@@ -41,6 +41,7 @@ def arista_dev(line):
     local_port = local_port.strip('"')
     neigh_port = my_list[2]
     lldp_neigh = my_list[1]
+    lldp_neigh = lldp_neigh.split(".")[0]
     lldp_link = "%s -->|%s <br><br>%s|%s\n" % (target_dev, local_port, neigh_port, lldp_neigh)
     lldp_diagram.write(lldp_link)
 
@@ -52,7 +53,8 @@ def juniper_dev(line):
     local_port = local_port.strip('"')
     neigh_port = my_list[1]
     lldp_neigh = my_list[-1]
-    lldp_neigh = lldp_neigh.strip('",')        
+    lldp_neigh = lldp_neigh.strip('",')
+    lldp_neigh = lldp_neigh.split(".")[0]        
     lldp_link = "%s -->|%s <br><br>%s|%s\n" % (target_dev, local_port, neigh_port, lldp_neigh)
     lldp_diagram.write(lldp_link)
 
@@ -77,7 +79,7 @@ myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit %s >> ra
 # myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit 'hostname-here-sw' >> raw.txt"
 
 # Telling user to wait while command runs. 
-print "... stay funky for about 5 seconds."
+print("... stay funky for about 5 seconds.")
 
 # Run ansible command, and set output to string format
 ans_output = p.call(myCmd,shell=True)
