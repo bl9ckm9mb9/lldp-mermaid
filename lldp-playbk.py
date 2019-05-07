@@ -40,28 +40,26 @@ def arista_dev(line):
     local_port = my_list[0]
     local_port = local_port.strip('"')
     neigh_port = my_list[2]
+    neigh_port = neigh_port[0:2]+neigh_port[-2:]
     lldp_neigh = my_list[1]
     lldp_neigh = lldp_neigh.split(".")[0]
     lldp_link = "%s -->|%s <br><br>%s|%s\n" % (target_dev, local_port, neigh_port, lldp_neigh)
     # Insert your function to check for duplicate links, here.
-    
-    ### Beginning of TEST code block. ###
-
     A = local_port
     B = (neigh_port[0:2]+neigh_port[-2:])
     link_pair = A + B
     reverse_pair = B + A
     if link_pair in links or reverse_pair in links:
-        print("Found a link duplicate.")
+        #print("Found a link duplicate.")
+        pass
     else:
         links.append(link_pair)
         links.append(reverse_pair)
-        print("Adding to MD file.")
-
-    ### End of TEST code block. ###
+        #print("Adding to MD file.")
+        lldp_diagram.write(lldp_link)
 
     #Insert code to write to MD file here.
-    lldp_diagram.write(lldp_link)
+    #lldp_diagram.write(lldp_link)
 
 
 def juniper_dev(line):
@@ -71,6 +69,7 @@ def juniper_dev(line):
     local_port = my_list[0]
     local_port = local_port.strip('"')
     neigh_port = my_list[-2]
+    neigh_port = neigh_port[0:2]+neigh_port[-2:]
     lldp_neigh = my_list[-1]
     lldp_neigh = lldp_neigh.strip('",')
     lldp_neigh = lldp_neigh.split(".")[0]        
@@ -82,6 +81,8 @@ user_input = argv
 p = subprocess
 hyphen = "-"
 colon = ":"
+neigh_port = ""
+links = []
 
 '''
 Testing via Ansible ad-hoc command:
@@ -137,13 +138,11 @@ File from previous run, containing the filtered
 cleanedup_txt = open('cleanedup.txt', 'a+')
 diagram_txt= open('diagram.txt', 'a+')
 
-neigh_port = ""
 
 '''
 Master list of port pairs to avoid duplicate links. 
 Port pair: local_port + neigh_port ("Et43Et12") 
 '''
-links = []
 
 with open("lldp-diagram.md","a+") as lldp_diagram:
     target_dev = ""
@@ -152,7 +151,6 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
     target_dev = ""
     neighbor = ""
     noise = "TTL"
-    debug_list = []
 
     # write type of file:
     lldp_diagram.write(graph_direction)
