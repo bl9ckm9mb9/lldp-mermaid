@@ -51,7 +51,7 @@ def juniper_dev(line):
         del my_list[-1]
     local_port = my_list[0]
     local_port = local_port.strip('"')
-    neigh_port = my_list[1]
+    neigh_port = my_list[-2]
     lldp_neigh = my_list[-1]
     lldp_neigh = lldp_neigh.strip('",')
     lldp_neigh = lldp_neigh.split(".")[0]        
@@ -72,7 +72,7 @@ ansible-playbook ~/myansible/lldp.yml --limit "hostname-here-sw"
 
 # This one works:
 site = user_input[1]
-#site = "spn-dsc0"
+#site = ""
 myCmd = "ansible-playbook /Users/diegoavalos/myansible/lldp.yml --limit %s >> raw.txt" % (site)
 
 # Used for testing ; bypassing sysargv variables
@@ -123,7 +123,6 @@ neigh_port = ""
 with open("lldp-diagram.md","a+") as lldp_diagram:
     target_dev = ""
     local_port = ""
-    #lldp_neigh_port = ""
     lldp_neigh = ""
     target_dev = ""
     neighbor = ""
