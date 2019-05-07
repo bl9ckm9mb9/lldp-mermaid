@@ -43,7 +43,26 @@ def arista_dev(line):
     lldp_neigh = my_list[1]
     lldp_neigh = lldp_neigh.split(".")[0]
     lldp_link = "%s -->|%s <br><br>%s|%s\n" % (target_dev, local_port, neigh_port, lldp_neigh)
+    # Insert your function to check for duplicate links, here.
+    
+    ### Beginning of TEST code block. ###
+
+    A = local_port
+    B = (neigh_port[0:2]+neigh_port[-2:])
+    link_pair = A + B
+    reverse_pair = B + A
+    if link_pair in links or reverse_pair in links:
+        print("Found a link duplicate.")
+    else:
+        links.append(link_pair)
+        links.append(reverse_pair)
+        print("Adding to MD file.")
+
+    ### End of TEST code block. ###
+
+    #Insert code to write to MD file here.
     lldp_diagram.write(lldp_link)
+
 
 def juniper_dev(line):
     my_list = line.split()
@@ -120,6 +139,12 @@ diagram_txt= open('diagram.txt', 'a+')
 
 neigh_port = ""
 
+'''
+Master list of port pairs to avoid duplicate links. 
+Port pair: local_port + neigh_port ("Et43Et12") 
+'''
+links = []
+
 with open("lldp-diagram.md","a+") as lldp_diagram:
     target_dev = ""
     local_port = ""
@@ -161,6 +186,7 @@ raw_txt.close()
 cleanedup_txt.close()
 lldp_diagram.close()
 
+print("List links:",links)
 
 # Command to open file with default Markdown reader
 open_typora = p.Popen(["open", "lldp-diagram.md"], stdout=subprocess.PIPE)
