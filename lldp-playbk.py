@@ -34,6 +34,8 @@ def dev_shape(item):
 		formatted_dev = (''.join(rtr))
 		str(formatted_dev)
 
+
+
 def arista_dev(line):
     my_list = line.split()
     del my_list[-1]
@@ -69,12 +71,26 @@ def juniper_dev(line):
     local_port = my_list[0]
     local_port = local_port.strip('"')
     neigh_port = my_list[-2]
-    neigh_port = neigh_port[0:2]+neigh_port[-2:]
+    #neigh_port = neigh_port[0:2]+neigh_port[-2:]
     lldp_neigh = my_list[-1]
     lldp_neigh = lldp_neigh.strip('",')
     lldp_neigh = lldp_neigh.split(".")[0]        
     lldp_link = "%s -->|%s <br><br>%s|%s\n" % (target_dev, local_port, neigh_port, lldp_neigh)
-    lldp_diagram.write(lldp_link)
+    # Beginning of test block:
+    link_pair = local_port+neigh_port
+    reverse_pair = neigh_port+local_port
+    if link_pair in links or reverse_pair in links:
+        #print("Found a link duplicate.")
+        pass
+    else:
+        links.append(link_pair)
+        links.append(reverse_pair)
+        #print("Adding to MD file.")
+        lldp_diagram.write(lldp_link)
+
+    # End of Test Block
+
+    #lldp_diagram.write(lldp_link)
 
 # Variable to use throughout script
 user_input = argv
@@ -148,7 +164,6 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
     target_dev = ""
     local_port = ""
     lldp_neigh = ""
-    target_dev = ""
     neighbor = ""
     noise = "TTL"
 
@@ -168,6 +183,7 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
             my_list = line.split()
             master_list.append(my_list[0])
             target_dev = my_list[0]
+            print target_dev
         elif (line.index("-")) == 11:
             # Juniper
             juniper_dev(line)
@@ -184,7 +200,7 @@ raw_txt.close()
 cleanedup_txt.close()
 lldp_diagram.close()
 
-print("List links:",links)
+#print("List links:",links)
 
 # Command to open file with default Markdown reader
 open_typora = p.Popen(["open", "lldp-diagram.md"], stdout=subprocess.PIPE)
