@@ -1,0 +1,121 @@
+#!/bin/bash/env Python3
+''' Python Script to run Ansible Playbook, providing a key word to
+execute the Playbook on - Project LLDP Mermaid App '''
+
+# Import argv to provide an argument in python script
+from sys import argv
+# Using "subprocess" to run commands (i.e. "ansible-playbook nameofplay.yml")
+import subprocess
+
+# Variable to use throughout script
+net_grp = argv
+p = subprocess
+
+'''
+Testing via Ansible ad-hoc command:
+Example of ansible command: ansible-playbook ~/myansible/lldp.yml --limit "spn-500-paula-dtg01-sw"
+'''
+
+ans_output = p.check_output(["ansible-playbook", "/Users/diegoavalos/myansible/lldp.yml","-i","/Users/diegoavalos/myansible/hosts"])
+
+############################################################################################
+
+# Variables
+hyphen = "-"
+colon = ":"
+play_lldp_file = open('play-lldp.txt', 'a+')
+
+############################################################################################
+
+# Write Ansible Playbook output to a txt file
+str(ans_output)
+
+############################################################################################
+
+with open('ans-output-file.txt', 'a+') as ans_output_file:
+	ans_output_file.write(ans_output)
+
+	print "Hello... You are here, right at the doorstep of your loop."
+
+### Beginning of block A: 
+	with open('raw-output.txt', 'a+') as raw_output:
+		# readlines(): format lines, as lists full of strings, to search for wanted text,
+		# line by line.
+#		ans_output_file.readlines()
+#		read_list =  ans_output_file.read()
+#		print "This is your read_list:",read_list
+### End of block: A
+
+		# Iterate through content to filter out unwantend text
+		for line in ans_output_file:
+			print "LOGIC KICKING IN!"
+			if "msg" in line:
+				pass
+			elif "changed" in line:
+				pass
+			elif "stdout" in line:
+				pass
+			elif "table" in line:
+				pass
+			#elif "SUCCESS" in line:
+				#pass
+			# This adds line to play_lldp_file
+			elif hyphen in line or colon in line:
+				print "Entered your loop."
+				play_lldp_file.write(line)
+
+# Checking if file is closed:
+print(ans_output_file.closed), "ans_output_file is closed."
+
+# Checking if 
+contents = open('ans-output-file.txt','r+')
+
+#contents = ans_output_file.open()
+print "This is your ans_output_file:",contents.read()
+
+
+# Close new file:
+ans_output_file.close()
+play_lldp_file.close()
+
+############################################################################################
+
+# Mermaid formatting:
+graph_direction = "graph TD"
+
+''' 
+File from previous run, containing the filtered
+    output of the Ansible Playbook
+''' 
+play_lldp_file = open('play-lldp.txt', 'a+')
+final_map = open('final_map.txt', 'a+')
+
+with open("lldp-diagram.md","a+") as lldp_diagram:
+    target_dev = ""
+    local_port = ""
+    lldp_neigh_port = ""
+    lldp_neigh = ""
+    formatted_target_dev = ""
+    neighbor = ""
+    noise = "TTL"
+    # write type of file:
+    lldp_diagram.write(graph_direction)
+    # Check line by line, reformat and write to final_map
+    for line in play_lldp_file:
+        if noise in line:
+            pass
+        elif "SUCCESS" in line:
+            split.line()
+            target_dev = my_list[0]
+            formatted_target_dev = dev_shape(target_dev)
+            lldp_diagram.write(formatted_target_dev)
+        else:
+            my_list = split.line()
+            local_port = my_list[0] 
+            lldp_neigh = my_list[1]
+            neighbor = dev_shape(lldp_neigh)
+            play_lldp_file.write(lldp_link)
+    lldp_link = "%s -->|%s <br><br>|%s\n" % (formatted_target_dev, local_port, neighbor)
+
+print "Code executed." 
+
