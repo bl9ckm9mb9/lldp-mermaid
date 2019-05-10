@@ -31,7 +31,6 @@ def dev_shape(item):
         rtr.insert(1,item)
         formatted_dev = (''.join(rtr))
         return formatted_dev
-
 def arista_dev(line):
     my_list = line.split()
     del my_list[-1]
@@ -56,9 +55,10 @@ def arista_dev(line):
         links.append(reverse_pair)
         #print("Adding to MD file.")
         lldp_diagram.write(lldp_link)
-
-    #Insert code to write to MD file here.
-    #lldp_diagram.write(lldp_link)
+    if lldp_neigh not in master_list:
+        master_list.append(lldp_neigh)
+    else:
+        pass
 def juniper_dev(line):
     my_list = line.split()
     if my_list[-1] == '",':
@@ -66,11 +66,9 @@ def juniper_dev(line):
     local_port = my_list[0]
     local_port = local_port.strip('"')
     neigh_port = my_list[-2]
-    #neigh_port = neigh_port[0:2]+neigh_port[-2:]
     lldp_neigh = my_list[-1]
     lldp_neigh = lldp_neigh.strip('",')
     lldp_neigh = lldp_neigh.split(".")[0]
-    #lldp_neigh = dev_shape(lldp_neigh)
     lldp_link = "%s -->|%s <br><br>%s|%s\n" % (target_dev, local_port, neigh_port, lldp_neigh)
     # Beginning of test block:
     link_pair = local_port+neigh_port
@@ -83,6 +81,10 @@ def juniper_dev(line):
         links.append(reverse_pair)
         #print("Adding to MD file.")
         lldp_diagram.write(lldp_link)
+    if lldp_neigh not in master_list:
+        master_list.append(lldp_neigh)
+    else:
+        pass
 
     # End of Test Block
 
@@ -177,15 +179,18 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
             # Arista version
             arista_dev(line)
         formatted_dev = dev_shape(target_dev)
+        #print ("This is formatted_dev inside the loop:",formatted_dev)
+        lldp_neigh_fmt = dev_shape(lldp_neigh)
     '''
     Reformatting and adding devices to a new list called: 'pair_dev_list'
     to define the device shape in mermaid syntax.
     '''
+    #print ("Prior to reformatting the items in master_list:",master_list)
     for item in master_list:
         rfm_item = dev_shape(item)
         pair_dev = item + rfm_item
         pair_dev_list.insert(0, pair_dev)
-
+    print ("pair_dev_list:",pair_dev_list)
     lldp_diagram.write("```\n \n")
 '''
 Writing to a new file from 'lldp-diagram.md' file to insert the 
