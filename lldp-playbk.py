@@ -167,15 +167,9 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
         if noise in line:
             pass
         elif "SUCCESS" in line:
-            '''
-            The split() func. will create a list of your string of text,
-            splitting on empty spaces.
-            '''
             my_list = line.split()
-            #master_list.append(my_list[0])
             master_list.insert(0,my_list[0])
             target_dev = my_list[0]
-            #target_dev = dev_shape(target_dev)
         elif (line.index("-")) == 11:
             # Juniper
             juniper_dev(line)
