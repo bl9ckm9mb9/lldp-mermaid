@@ -9,6 +9,7 @@ LLDP Mermaid App
 # Using "subprocess" to run commands (i.e. "ansible-playbook nameofplay.yml")
 from sys import argv
 import subprocess
+import os
 ''' 
 My function for formatting
 '''
@@ -89,6 +90,11 @@ def juniper_dev(line):
     # End of Test Block
 
     #lldp_diagram.write(lldp_link)
+def check_and_insert(this_item,my_list):
+    if this_item in my_list:
+        pass
+    else:
+        my_list.insert(-1,this_item)
 
 # Variable to use throughout script
 user_input = argv
@@ -128,6 +134,7 @@ cleanedup_txt = open('cleanedup.txt','a+')
 with open('raw.txt', 'a+') as raw_txt:
     raw_txt.write(ans_output)
 
+# Reopening raw.txt in Read mode, and writing(+) at beginning of file:
 with open('raw.txt', 'r+') as file:
     list_of_lines = file.readlines()
     for line in list_of_lines:
@@ -142,7 +149,12 @@ with open('raw.txt', 'r+') as file:
         elif "master:0" in line:
             pass
         elif hyphen in line or colon in line:
-            cleanedup_txt.write(line)
+            try:
+                int(line[0])
+                cleanedup_txt.write(line[1:])
+                print("Your Try/Except block worked. Cleaned up the leading number.")
+            except ValueError:
+                cleanedup_txt.write(line)
 
 # Mermaid formatting:
 graph_direction = "```mermaid\n \ngraph LR \n"
@@ -151,7 +163,7 @@ File from previous run, containing the filtered
     output of the Ansible Playbook
 '''
 cleanedup_txt = open('cleanedup.txt', 'a+')
-diagram_txt= open('diagram.txt', 'a+')
+#diagram_txt= open('diagram.txt', 'a+')
 '''
 Master list of port pairs to avoid duplicate links. 
 Port pair: local_port + neigh_port ("Et43Et12") 
@@ -170,7 +182,9 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
             pass
         elif "SUCCESS" in line:
             my_list = line.split()
-            master_list.insert(0,my_list[0])
+            device_x = my_list[0]
+            check_and_insert(device_x,master_list)
+            #master_list.insert(0,my_list[0])
             target_dev = my_list[0]
         elif (line.index("-")) == 11:
             # Juniper
@@ -189,8 +203,9 @@ with open("lldp-diagram.md","a+") as lldp_diagram:
     for item in master_list:
         rfm_item = dev_shape(item)
         pair_dev = item + rfm_item
-        pair_dev_list.insert(0, pair_dev)
-    print ("pair_dev_list:",pair_dev_list)
+        check_and_insert(pair_dev, pair_dev_list)
+        #pair_dev_list.insert(0, pair_dev)
+    #print ("pair_dev_list:",pair_dev_list)
     lldp_diagram.write("```\n \n")
 '''
 Writing to a new file from 'lldp-diagram.md' file to insert the 
@@ -200,7 +215,7 @@ lines where needed. This is a great place to insert new text.
 Final file used to create the lldp mermaid diagram: site-diagram.md
 '''
 with open("lldp-diagram.md","r") as f:
-    with open("site-diagram.md", "w") as site_diagram:
+    with open("site-diagram.md", "a") as site_diagram:
         site_diagram.write(graph_direction)
         for item in pair_dev_list:
             site_diagram.write(item+"\n")
@@ -213,5 +228,9 @@ cleanedup_txt.close()
 lldp_diagram.close()
 site_diagram.close()
 
+if os.path.exists("lldp-diagram.md"):
+    os.remove("lldp-diagram.md")
+else:
+    pass
 # Command to open file with default Markdown reader
-open_typora = p.Popen(["open", "site-diagram.md"], stdout=subprocess.PIPE)
+open_typora = p.Popen(["open","-n", "site-diagram.md"], stdout=subprocess.PIPE)
